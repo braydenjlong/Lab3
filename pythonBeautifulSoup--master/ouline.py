@@ -2,13 +2,34 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-
-
-#function to get job list from url f'https://www.talent.com/jobs?k={role}&l={location}'
-
 def getJobList(role,location):
-    url = f'https://www.talent.com/jobs?k={role}&l={location}'
-    # Complete the missing part of this function here
+   # Complete the missing part of this function here
+   url = f'https://www.talent.com/jobs?k={role}&l={location}'
+   response = requests.get(url)
+
+   # print the status code here!
+   if response :
+    print('Pass')
+   else :
+    print('Fail')
+
+   soup = BeautifulSoup(response.text , 'html.parser')
+   JobDetails = soup.find_all('div', class_='card card__job')
+   # Create an array Here
+   arr =[]
+   for job in JobDetails:
+       jobTitle = job.find('h2', class_='card__job-title').text.strip()
+       company = job.find('div', class_='card__job-empname-label').text.strip()
+       description = job.find('p', class_='card__job-snippet').text.replace('\n', '').replace("'", "").strip()
+       jobDetailsjson = {
+           "Title": jobTitle,
+           "Company": company,
+           "Description": description
+       }
+       arr[jobDetailsjson]
+       
+       return arr
+
 
 #save data in JSON file
 def saveDataInJSON(jobDetails):
